@@ -1,261 +1,80 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meu RPG de Amor</title>
-    <style>
-        /* Estilos Gerais do Fundo do Jogo */
-        body {
-            /* Plano de fundo do Céu Noturno Estrelado em Pixel Art */
-            background-image: url('https://freepik.com');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-color: #0b020c; /* Fundo reserva caso a internet demore */
-            
-            color: #ffffff;
-            font-family: 'Courier New', Courier, monospace;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            overflow: hidden;
-            position: relative;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>💕 Pixel Love Adventure</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
-        /* Camada para o efeito de partículas de corações flutuantes */
-        #camada-coracoes {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 1;
-        }
+  * { margin: 0; padding: 0; box-sizing: border-box; image-rendering: pixelated; }
 
-        /* Estilo base de cada coração gerado */
-        .coracao-pixel {
-            position: absolute;
-            font-size: 24px;
-            user-select: none;
-            pointer-events: none;
-            animation: flutuarSubindo 4s linear forwards;
-            opacity: 0.8;
-        }
+  :root {
+    --pink: #ff6b9d;
+    --red: #e8003a;
+    --purple: #9b59b6;
+    --dark: #0a0014;
+    --gold: #ffd700;
+    --white: #fff0f5;
+    --cyan: #00e5ff;
+  }
 
-        @keyframes flutuarSubindo {
-            0% {
-                transform: translateY(0) scale(0.8) rotate(0deg);
-                opacity: 1;
-            }
-            50% {
-                transform: translateY(-50vh) scale(1.2) rotate(15deg);
-            }
-            100% {
-                transform: translateY(-100vh) scale(0.8) rotate(-15deg);
-                opacity: 0;
-            }
-        }
+  body {
+    background: var(--dark);
+    font-family: 'Press Start 2P', monospace;
+    overflow: hidden;
+    width: 100vw; height: 100vh;
+    cursor: crosshair;
+  }
 
-        /* Moldura de estilo pixel/retro rosa com efeito de vidro jateado */
-        .container-rpg {
-            border: 4px solid #ff4b82;
-            padding: 30px;
-            background-color: rgba(22, 7, 26, 0.93); /* Transparência escura para facilitar a leitura */
-            box-shadow: 0 0 25px #ff4b82, inset 0 0 15px #ff4b82;
-            width: 85%;
-            max-width: 500px;
-            text-align: center;
-            border-radius: 8px;
-            z-index: 10;
-            position: relative;
-            backdrop-filter: blur(3px); /* Desfoque elegante para destacar as nuvens de fundo */
-        }
+  /* ===== STARRY SKY ===== */
+  #sky {
+    position: fixed; inset: 0;
+    background: radial-gradient(ellipse at 50% 0%, #1a0030 0%, #0a0014 60%);
+    z-index: 0;
+    overflow: hidden;
+  }
 
-        /* Controle de visibilidade das telas do RPG */
-        .tela {
-            display: none;
-        }
+  .star {
+    position: absolute;
+    background: #fff;
+    border-radius: 50%;
+    animation: twinkle var(--dur) ease-in-out infinite;
+    opacity: var(--op);
+  }
+  .star.big { box-shadow: 0 0 4px 2px rgba(255,200,255,0.6); }
 
-        .tela.ativa {
-            display: block;
-        }
+  @keyframes twinkle {
+    0%,100% { transform: scale(1); opacity: var(--op); }
+    50% { transform: scale(1.8); opacity: 1; }
+  }
 
-        /* Estilo da caixa de clique interativa inicial */
-        .caixa-transmissao {
-            border: 2px solid #5a2e61;
-            background-color: #110314;
-            padding: 20px;
-            cursor: pointer;
-            border-radius: 4px;
-            transition: all 0.3s ease;
-            position: relative;
-        }
+  .shooting-star {
+    position: absolute;
+    width: 3px; height: 3px;
+    background: white;
+    border-radius: 50%;
+    box-shadow: 0 0 6px 2px white, 20px 0 8px white, 40px 0 6px rgba(255,255,255,0.5);
+    animation: shoot 2s linear forwards;
+    opacity: 0;
+  }
+  @keyframes shoot {
+    0% { opacity:1; transform: translate(0,0); }
+    100% { opacity:0; transform: translate(-300px, 150px); }
+  }
 
-        .caixa-transmissao:hover {
-            border-color: #ff4b82;
-            box-shadow: 0 0 10px #ff4b82;
-        }
+  /* ===== MAIN CONTAINER ===== */
+  #game-container {
+    position: relative; z-index: 10;
+    width: 100vw; height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+  }
 
-        /* Seta verde de reprodução/avanço */
-        .seta-play {
-            color: #00ffcc;
-            font-size: 18px;
-            position: absolute;
-            bottom: 10px;
-            right: 15px;
-        }
-
-        /* Grupo de botões verticais ideal para textos longos no mobile */
-        .grupo-botoes {
-            margin-top: 25px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .botao-escolha {
-            background-color: #110314;
-            color: #ffffff;
-            border: 2px solid #ff4b82;
-            padding: 12px 15px;
-            cursor: pointer;
-            font-family: inherit;
-            border-radius: 4px;
-            transition: 0.2s;
-            font-size: 14px;
-            line-height: 1.4;
-        }
-
-        .botao-escolha:hover {
-            background-color: #ff4b82;
-            color: #000000;
-            box-shadow: 0 0 8px #ff4b82;
-        }
-
-        .destaque-sucesso {
-            color: #00ffcc;
-            font-weight: bold;
-        }
-
-        .destaque-erro {
-            color: #ff3333;
-            font-weight: bold;
-        }
-    </style>
-</head>
-<body>
-
-    <!-- Reprodutor de áudio oculto para a música melancólica -->
-    <audio id="trilha-sonora" src="musica.mp3" loop></audio>
-
-    <!-- Camada transparente para exibição dos corações flutuantes -->
-    <div id="camada-coracoes"></div>
-
-    <div class="container-rpg">
-
-        <!-- TELA 1: MENU INICIAL -->
-        <div id="tela-inicial" class="tela ativa">
-            <div class="caixa-transmissao" onclick="avancarTela('tela-pergunta-1')">
-                <p><i>Clique para iniciar a transmissão de memórias...</i></p>
-                <span class="seta-play">▶</span>
-            </div>
-        </div>
-
-        <!-- TELA 2: QUIZ - FASE 1 -->
-        <div id="tela-pergunta-1" class="tela">
-            <p><b>[FASE 1]</b> Conexão estabelecida...</p>
-            <p>Toque na alternativa correta: Qual é o nosso jeito favorito de passar o tempo juntos?</p>
-            
-            <div class="grupo-botoes">
-                <button class="botao-escolha" onclick="avancarTela('tela-pergunta-2')">
-                    🎮 Jogando Brawl, assistindo filmes/animes e jogando Roblox
-                </button>
-                <button class="botao-escolha" onclick="avancarTela('tela-erro-1')">
-                    💤 Ficar sem fazer nada olhando pro teto
-                </button>
-            </div>
-        </div>
-
-        <!-- TELA 3: QUIZ - FASE 2 -->
-        <div id="tela-pergunta-2" class="tela">
-            <p class="destaque-sucesso">✓ FASE 1 CONCLUÍDA!</p>
-            <p><b>[FASE 2]</b> Estamos jogando uma partida decisiva no Brawl Stars ou no Roblox e o time adversário está apelando muito. Qual é a nossa estratégia infalível?</p>
-            
-            <div class="grupo-botoes">
-                <button class="botao-escolha" onclick="avancarTela('tela-pergunta-3')">
-                    🎮 Jogar juntos em sincronia, porque mesmo se a gente perder, a gente se diverte e rilha junto.
-                </button>
-                <button class="botao-escolha" onclick="avancarTela('tela-erro-2')">
-                    😡 Quitar do jogo, desinstalar tudo e ir dormir com raiva um do outro.
-                </button>
-            </div>
-        </div>
-
-        <!-- NOVA TELA: QUIZ - FASE 3 -->
-        <div id="tela-pergunta-3" class="tela">
-            <p class="destaque-sucesso">✓ FASE 2 CONCLUÍDA!</p>
-            <p><b>[FASE 3]</b> Alerta de Lag! A distância ou a rotina tentaram criar um "Bug de Saudade" no nosso servidor principal. Como resolvemos esse problema de conexão?</p>
-            
-            <div class="grupo-botoes">
-                <button class="botao-escolha" onclick="avancarTela('tela-vitoria-final')">
-                    📞 Uma chamada de vídeo interminável ou uma gameplay conversando até tarde da noite para resetar o servidor.
-                </button>
-                <button class="botao-escolha" onclick="avancarTela('tela-erro-3')">
-                    📺 Ficar assistindo Reels sozinho e esquecer de mandar mensagem avisando que está com saudades.
-                </button>
-            </div>
-        </div>
-
-        <!-- TELA 4: TELA DE VITÓRIA FINAL (FIM DE JOGO) -->
-        <div id="tela-vitoria-final" class="tela">
-            <p class="destaque-sucesso">🏆 VITÓRIA SOBERANA! JOGO ZERADO! 🏆</p>
-            <p>Você ganhou o título de <b>Player 2 definitivo</b> com <b>+9999 pontos de amor</b>!</p>
-            <p>Não importa o jogo, a graça ou o placar. Contanto que eu esteja no mesmo time que você, a gente sempre ganha! Você é a minha pessoa favorita e o melhor duo que eu poderia ter na vida inteira. ❤️</p>
-            <div class="grupo-botoes">
-                <button class="botao-escolha" onclick="avancarTela('tela-inicial')">Jogar Novamente 🔄</button>
-            </div>
-        </div>
-
-        <!-- TELA: GAME OVER DA FASE 1 -->
-        <div id="tela-erro-1" class="tela">
-            <p class="destaque-erro">❌ GAME OVER... Errou na Fase 1! ❌</p>
-            <p>Olhar pro teto?! Sério mesmo? Pensei que você me conhecia melhor...</p>
-            <p>Vou te dar mais uma chance de recuperar o seu save game.</p>
-            <div class="grupo-botoes">
-                <button class="botao-escolha" onclick="avancarTela('tela-pergunta-1')">Tentar Novamente 🎮</button>
-            </div>
-        </div>
-
-        <!-- TELA: GAME OVER DA FASE 2 -->
-        <div id="tela-erro-2" class="tela">
-            <p class="destaque-erro">❌ GAME OVER... Errou na Fase 2! ❌</p>
-            <p>Ir dormir com raiva?! Jamais! O nosso duo é inseparável na alegria e no lag.</p>
-            <p>Aperte o botão abaixo para tentar passar dessa fase de novo.</p>
-            <div class="grupo-botoes">
-                <button class="botao-escolha" onclick="avancarTela('tela-pergunta-2')">Tentar Novamente 🎮</button>
-            </div>
-        </div>
-
-        <!-- NOVA TELA: GAME OVER DA FASE 3 -->
-        <div id="tela-erro-3" class="tela">
-            <p class="destaque-erro">❌ GAME OVER... Errou na Fase 3! ❌</p>
-            <p>Conexão perdida! O ping subiu demais. Reinicie o roteador do amor e mande uma mensagem!</p>
-            <div class="grupo-botoes">
-                <button class="botao-escolha" onclick="avancarTela('tela-pergunta-3')">Tentar Novamente 🎮</button>
-            </div>
-        </div>
-
-    </div>
-
-    <script>
-        const camadaCoracoes = document.getElementById('camada-coracoes');
-        const tiposCoracoes = ['❤️', '💖', '💘', '💝', '💕'];
-
-        // Função para alternar as telas visíveis do jogo
-        function avancarTela(idProximaTela) {
-            // Esconde todas as telas
-            const telas = document.querySelectorAll('.tela');
+  /* ===== SCREENS ===== */
+  .screen {
+    display: none;
+    position: absolute;
+    width: min(700px, 96vw);
+    background: rgba(10,0,20,0.92);
+    border: 4px solid var(--pink);
+    box-shadow: 0 0 0 4px var(--dark), 0 0 0 8px var(--pink), 0 0 40px var(--pink), inset 0 0 30px rgba(
