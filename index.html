@@ -7,7 +7,13 @@
     <style>
         /* Estilos Gerais do Fundo do Jogo */
         body {
-            background-color: #0b020c;
+            /* Plano de fundo do Céu Noturno Estrelado em Pixel Art */
+            background-image: url('https://freepik.com');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-color: #0b020c; /* Fundo reserva caso a internet demore */
+            
             color: #ffffff;
             font-family: 'Courier New', Courier, monospace;
             display: flex;
@@ -54,21 +60,22 @@
             }
         }
 
-        /* Moldura de estilo pixel/retro rosa */
+        /* Moldura de estilo pixel/retro rosa com efeito de vidro jateado */
         .container-rpg {
             border: 4px solid #ff4b82;
             padding: 30px;
-            background-color: rgba(22, 7, 26, 0.95);
-            box-shadow: 0 0 20px #ff4b82, inset 0 0 10px #ff4b82;
+            background-color: rgba(22, 7, 26, 0.93); /* Transparência escura para facilitar a leitura */
+            box-shadow: 0 0 25px #ff4b82, inset 0 0 15px #ff4b82;
             width: 85%;
             max-width: 500px;
             text-align: center;
             border-radius: 8px;
             z-index: 10;
             position: relative;
+            backdrop-filter: blur(3px); /* Desfoque elegante para destacar as nuvens de fundo */
         }
 
-        /* Controle das telas do RPG */
+        /* Controle de visibilidade das telas do RPG */
         .tela {
             display: none;
         }
@@ -77,7 +84,7 @@
             display: block;
         }
 
-        /* Estilo da caixa de clique interativa */
+        /* Estilo da caixa de clique interativa inicial */
         .caixa-transmissao {
             border: 2px solid #5a2e61;
             background-color: #110314;
@@ -102,7 +109,7 @@
             right: 15px;
         }
 
-        /* Estilo para os botões de escolha verticais (melhor para textos longos) */
+        /* Grupo de botões verticais ideal para textos longos no mobile */
         .grupo-botoes {
             margin-top: 25px;
             display: flex;
@@ -142,51 +149,79 @@
 </head>
 <body>
 
-    <!-- Container invisível onde os corações vão aparecer -->
+    <!-- Reprodutor de áudio oculto para a música melancólica -->
+    <audio id="trilha-sonora" src="musica.mp3" loop></audio>
+
+    <!-- Camada transparente para exibição dos corações flutuantes -->
     <div id="camada-coracoes"></div>
 
     <div class="container-rpg">
 
-        <!-- TELA 1: TELA INICIAL -->
+        <!-- TELA 1: MENU INICIAL -->
         <div id="tela-inicial" class="tela ativa">
-            <div class="caixa-transmissao" onclick="avancarTela('tela-pergunta')">
+            <div class="caixa-transmissao" onclick="avancarTela('tela-pergunta-1')">
                 <p><i>Clique para iniciar a transmissão de memórias...</i></p>
                 <span class="seta-play">▶</span>
             </div>
         </div>
 
-        <!-- TELA 2: A PERGUNTA DO QUIZ -->
-        <div id="tela-pergunta" class="tela">
-            <p>Conexão estabelecida...</p>
-            <p><b>Para provar que você é o Player 2 ideal, responda: Qual é o nosso jeito favorito de passar o tempo juntos?</b></p>
+        <!-- TELA 2: QUIZ - FASE 1 -->
+        <div id="tela-pergunta-1" class="tela">
+            <p><b>[FASE 1]</b> Conexão estabelecida...</p>
+            <p>Toque na alternativa correta: Qual é o nosso jeito favorito de passar o tempo juntos?</p>
             
             <div class="grupo-botoes">
-                <button class="botao-escolha" onclick="avancarTela('tela-vitoria')">
+                <button class="botao-escolha" onclick="avancarTela('tela-pergunta-2')">
                     🎮 Jogando Brawl, assistindo filmes/animes e jogando Roblox
                 </button>
-                <button class="botao-escolha" onclick="avancarTela('tela-erro')">
+                <button class="botao-escolha" onclick="avancarTela('tela-erro-1')">
                     💤 Ficar sem fazer nada olhando pro teto
                 </button>
             </div>
         </div>
 
-        <!-- TELA 3A: SE CLICAR NA OPÇÃO A (RESPOSTA CERTA) -->
-        <div id="tela-vitoria" class="tela">
-            <p class="destaque-sucesso">✨ ACERTOU EM CHEIO! ✨</p>
-            <p>Você ganhou <b>+9999 pontos de amor</b>!</p>
-            <p>Não existe nada melhor no mundo do que jogar e assistir nossas coisas juntos. Você é a minha pessoa favorita e o melhor duo que eu poderia ter na vida! ❤️</p>
+        <!-- TELA 3: QUIZ - FASE 2 -->
+        <div id="tela-pergunta-2" class="tela">
+            <p class="destaque-sucesso">✓ FASE 1 CONCLUÍDA!</p>
+            <p><b>[FASE 2]</b> Estamos jogando uma partida decisiva no Brawl Stars ou no Roblox e o time adversário está apelando muito. Qual é a nossa estratégia infalível?</p>
+            
+            <div class="grupo-botoes">
+                <button class="botao-escolha" onclick="avancarTela('tela-vitoria-final')">
+                    🎮 Jogar juntos em sincronia, porque mesmo se a gente perder, a gente se diverte e rilha junto.
+                </button>
+                <button class="botao-escolha" onclick="avancarTela('tela-erro-2')">
+                    😡 Quitar do jogo, desinstalar tudo e ir dormir com raiva um do outro.
+                </button>
+            </div>
+        </div>
+
+        <!-- TELA 4: TELA DE VITÓRIA FINAL (FIM DE JOGO) -->
+        <div id="tela-vitoria-final" class="tela">
+            <p class="destaque-sucesso">🏆 VITÓRIA SOBERANA! JOGO ZERADO! 🏆</p>
+            <p>Você ganhou o título de <b>Player 2 definitivo</b> com <b>+9999 pontos de amor</b>!</p>
+            <p>Não importa o jogo, a graça ou o placar. Contanto que eu esteja no mesmo time que você, a gente sempre ganha! Você é a minha pessoa favorita e o melhor duo que eu poderia ter na vida inteira. ❤️</p>
             <div class="grupo-botoes">
                 <button class="botao-escolha" onclick="avancarTela('tela-inicial')">Jogar Novamente 🔄</button>
             </div>
         </div>
 
-        <!-- TELA 3B: SE CLICAR NA OPÇÃO B (RESPOSTA ERRADA) -->
-        <div id="tela-erro" class="tela">
-            <p class="destaque-erro">❌ GAME OVER... Errou feio! ❌</p>
+        <!-- TELA: GAME OVER DA FASE 1 -->
+        <div id="tela-erro-1" class="tela">
+            <p class="destaque-erro">❌ GAME OVER... Errou na Fase 1! ❌</p>
             <p>Olhar pro teto?! Sério mesmo? Pensei que você me conhecia melhor...</p>
             <p>Vou te dar mais uma chance de recuperar o seu save game.</p>
             <div class="grupo-botoes">
-                <button class="botao-escolha" onclick="avancarTela('tela-pergunta')">Tentar Novamente 🎮</button>
+                <button class="botao-escolha" onclick="avancarTela('tela-pergunta-1')">Tentar Novamente 🎮</button>
+            </div>
+        </div>
+
+        <!-- TELA: GAME OVER DA FASE 2 -->
+        <div id="tela-erro-2" class="tela">
+            <p class="destaque-erro">❌ GAME OVER... Errou na Fase 2! ❌</p>
+            <p>Ir dormir com raiva?! Jamais! O nosso duo é inseparável na alegria e no lag.</p>
+            <p>Aperte o botão abaixo para tentar passar dessa fase de novo.</p>
+            <div class="grupo-botoes">
+                <button class="botao-escolha" onclick="avancarTela('tela-pergunta-2')">Tentar Novamente 🎮</button>
             </div>
         </div>
 
@@ -196,6 +231,7 @@
         const camadaCoracoes = document.getElementById('camada-coracoes');
         const tiposCoracoes = ['❤️', '💖', '💘', '💝', '💕'];
 
+        // Função responsável por gerar os corações individuais na tela
         function criarCoracao(x, y, automatico = false) {
             const coracao = document.createElement('div');
             coracao.classList.add('coracao-pixel');
@@ -203,6 +239,7 @@
             coracao.style.left = x + 'px';
             coracao.style.top = y + 'px';
             
+            // Define o tamanho com base no tipo de geração (automático é menor, por clique é maior)
             const tamanho = automatico ? (Math.random() * 16 + 12) : (Math.random() * 20 + 20);
             coracao.style.fontSize = tamanho + 'px';
             
@@ -211,35 +248,15 @@
 
             camadaCoracoes.appendChild(coracao);
 
+            // Deleta o elemento após a animação para evitar lentidão
             setTimeout(() => {
                 coracao.remove();
             }, duracao * 1000);
         }
 
+        // Evento 1: Explosão de corações onde o usuário clicar na tela
         window.addEventListener('click', (e) => {
             const quantidade = Math.floor(Math.random() * 3) + 3;
             for(let i = 0; i < quantidade; i++) {
                 const offsetX = (Math.random() * 40) - 20;
                 const offsetY = (Math.random() * 40) - 20;
-                criarCoracao(e.clientX + offsetX, e.clientY + offsetY, false);
-            }
-        });
-
-        setInterval(() => {
-            const xAleatorio = Math.random() * window.innerWidth;
-            const yInferior = window.innerHeight + 20; 
-            criarCoracao(xAleatorio, yInferior, true);
-        }, 400);
-
-        function avancarTela(idDaProximaTela) {
-            const telas = document.querySelectorAll('.tela');
-            telas.forEach(tela => tela.classList.remove('ativa'));
-
-            const proximaTela = document.getElementById(idDaProximaTela);
-            if (proximaTela) {
-                proximaTela.classList.add('ativa');
-            }
-        }
-    </script>
-</body>
-</html>
