@@ -186,11 +186,26 @@
             <p><b>[FASE 2]</b> Estamos jogando uma partida decisiva no Brawl Stars ou no Roblox e o time adversário está apelando muito. Qual é a nossa estratégia infalível?</p>
             
             <div class="grupo-botoes">
-                <button class="botao-escolha" onclick="avancarTela('tela-vitoria-final')">
+                <button class="botao-escolha" onclick="avancarTela('tela-pergunta-3')">
                     🎮 Jogar juntos em sincronia, porque mesmo se a gente perder, a gente se diverte e rilha junto.
                 </button>
                 <button class="botao-escolha" onclick="avancarTela('tela-erro-2')">
                     😡 Quitar do jogo, desinstalar tudo e ir dormir com raiva um do outro.
+                </button>
+            </div>
+        </div>
+
+        <!-- NOVA TELA: QUIZ - FASE 3 -->
+        <div id="tela-pergunta-3" class="tela">
+            <p class="destaque-sucesso">✓ FASE 2 CONCLUÍDA!</p>
+            <p><b>[FASE 3]</b> Alerta de Lag! A distância ou a rotina tentaram criar um "Bug de Saudade" no nosso servidor principal. Como resolvemos esse problema de conexão?</p>
+            
+            <div class="grupo-botoes">
+                <button class="botao-escolha" onclick="avancarTela('tela-vitoria-final')">
+                    📞 Uma chamada de vídeo interminável ou uma gameplay conversando até tarde da noite para resetar o servidor.
+                </button>
+                <button class="botao-escolha" onclick="avancarTela('tela-erro-3')">
+                    📺 Ficar assistindo Reels sozinho e esquecer de mandar mensagem avisando que está com saudades.
                 </button>
             </div>
         </div>
@@ -225,38 +240,22 @@
             </div>
         </div>
 
+        <!-- NOVA TELA: GAME OVER DA FASE 3 -->
+        <div id="tela-erro-3" class="tela">
+            <p class="destaque-erro">❌ GAME OVER... Errou na Fase 3! ❌</p>
+            <p>Conexão perdida! O ping subiu demais. Reinicie o roteador do amor e mande uma mensagem!</p>
+            <div class="grupo-botoes">
+                <button class="botao-escolha" onclick="avancarTela('tela-pergunta-3')">Tentar Novamente 🎮</button>
+            </div>
+        </div>
+
     </div>
 
     <script>
         const camadaCoracoes = document.getElementById('camada-coracoes');
         const tiposCoracoes = ['❤️', '💖', '💘', '💝', '💕'];
 
-        // Função responsável por gerar os corações individuais na tela
-        function criarCoracao(x, y, automatico = false) {
-            const coracao = document.createElement('div');
-            coracao.classList.add('coracao-pixel');
-            coracao.innerText = tiposCoracoes[Math.floor(Math.random() * tiposCoracoes.length)];
-            coracao.style.left = x + 'px';
-            coracao.style.top = y + 'px';
-            
-            // Define o tamanho com base no tipo de geração (automático é menor, por clique é maior)
-            const tamanho = automatico ? (Math.random() * 16 + 12) : (Math.random() * 20 + 20);
-            coracao.style.fontSize = tamanho + 'px';
-            
-            const duracao = automatico ? (Math.random() * 3 + 3) : (Math.random() * 2 + 2);
-            coracao.style.animationDuration = duracao + 's';
-
-            camadaCoracoes.appendChild(coracao);
-
-            // Deleta o elemento após a animação para evitar lentidão
-            setTimeout(() => {
-                coracao.remove();
-            }, duracao * 1000);
-        }
-
-        // Evento 1: Explosão de corações onde o usuário clicar na tela
-        window.addEventListener('click', (e) => {
-            const quantidade = Math.floor(Math.random() * 3) + 3;
-            for(let i = 0; i < quantidade; i++) {
-                const offsetX = (Math.random() * 40) - 20;
-                const offsetY = (Math.random() * 40) - 20;
+        // Função para alternar as telas visíveis do jogo
+        function avancarTela(idProximaTela) {
+            // Esconde todas as telas
+            const telas = document.querySelectorAll('.tela');
