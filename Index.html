@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minha Missão Favorita: Você</title>
+    <!-- Fonte estilo Pixel Art -->
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Press Start 2P', cursive;
+        }
+
+        body {
+            background-color: #1a101e;
+            background-image: radial-gradient(#3d2547 2px, transparent 2px);
+            background-size: 24px 24px;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        /* Container do Jogo */
+        .game-container {
+            background: #2d1b33;
+            border: 6px solid #ff4b6b;
+            box-shadow: 0 0 0 6px #1a101e, 0 15px 0px rgba(0,0,0,0.4);
+            width: 100%;
+            max-width: 600px;
+            padding: 25px;
+            border-radius: 4px;
+            position: relative;
+        }
+
+        /* Interface de Status (HUD) */
+        .hud {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            font-size: 10px;
+            border-bottom: 4px dotted #4d3154;
+            padding-bottom: 15px;
+        }
+
+        .player-info span {
+            color: #00ffcc;
+        }
+
+        .hp-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .hp-bar {
+            width: 120px;
+            height: 16px;
+            background: #1a101e;
+            border: 3px solid #fff;
+            padding: 2px;
+        }
+
+        .hp-fill {
+            height: 100%;
+            width: 100%;
+            background: #ff4b6b;
+            transition: width 0.5s ease;
+        }
+
+        /* Tela Central */
+        .screen {
+            height: 180px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .pixel-heart {
+            font-size: 50px;
+            color: #ff4b6b;
+            animation: pulse 1s infinite alternate;
+            user-select: none;
+        }
+
+        @keyframes pulse {
+            from { transform: scale(1); text-shadow: 0 0 10px #ff4b6b; }
+            to { transform: scale(1.15); text-shadow: 0 0 25px #ff4b6b; }
+        }
+
+        /* Caixa de Diálogo Clássica */
+        .dialogue-box {
+            background: #120a15;
+            border: 4px solid #fff;
+            padding: 20px;
+            min-height: 110px;
+            position: relative;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .dialogue-text {
+            font-size: 11px;
+            line-height: 1.8;
+            color: #f4ece1;
+        }
+
+        /* Setinha piscante de "Próximo" */
+        .blink-arrow {
+            position: absolute;
+            bottom: 10px;
+            right: 15px;
+            font-size: 12px;
+            color: #00ffcc;
+            animation: blink 0.8s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
+        }
+
+        /* Botões de Decisão (Escondidos por padrão) */
+        .options-container {
+            display: none;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .btn-choice {
+            background: #1a101e;
+            border: 3px solid #00ffcc;
+            color: #fff;
+            padding: 12px 6px;
+            font-size: 9px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.2s;
+            line-height: 1.4;
+        }
+
+        .btn-choice:hover {
+            background: #00ffcc;
+            color: #1a101e;
+            transform: scale(1.03);
+        }
+
+        /* Indicador de Som Desativado (Aviso Inicial) */
+        .audio-hint {
+            font-size: 8px;
+            color: #00ffcc;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        /* Créditos de Rodapé */
+        .footer {
+            margin-top: 20px;
+            font-size: 8px;
+            color: #684b73;
+            text-shadow: 1px 1px #000;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Elemento de áudio com música em loop -->
+    <audio id="bgm" loop>
+        <source src="https://freemusicarchive.org" type="audio/mpeg">
+    </audio>
+
+    <div class="game-container">
+        <!-- HUD de Status -->
+        <div class="hud">
+            <div class="player-info">
+                JOGADOR 1: <span>MEU AMOR</span><br>
+                <small id="playerLvl" style="color: #aaa; font-size: 8px; margin-top: 4px; display:inline-block;">LVL: Sempre Evoluindo</small>
+            </div>
+            <div class="hp-container">
+                <span>AMOR:</span>
+                <div class="hp-bar">
+                    <div class="hp-fill" id="hpFill"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tela Principal -->
+        <div class="screen">
+            <div class="pixel-heart" id="screenVisual">❤</div>
+            <div class="audio-hint" id="audioHint">🎵 Clique na caixa para iniciar a jornada com som!</div>
+        </div>
+
+        <!-- Caixa de Mensagem -->
+        <div class="dialogue-box" id="dialogueBox" onclick="nextDialogue()">
+            <div class="dialogue-text" id="dialogueText">Clique para iniciar a transmissão de memórias...</div>
+            <div class="blink-arrow" id="blinkArrow">▶</div>
+        </div>
+
+        <!-- Botões para Escolhas de RPG -->
+        <div class="options-container" id="optionsContainer">
+            <button class="btn-choice" id="btnA" onclick="makeChoice('A')">Opção A</button>
+            <button class="btn-choice" id="btnB" onclick="makeChoice('B')">Opção B</button>
+        </div>
+    </div>
+
+    <div class="footer">Criado com amor exclusivamente para você.</div>
+
+    <script>
+        // Diálogos principais da história
+        const dialogues = [
+            "Se a nossa história fosse um RPG, olhar para trás mostraria o quanto a sua jornada é admirável.",
+            "Vejo o seu esforço diário ao juntar cada moeda, focado no nosso objetivo de ter o nosso próprio cantinho.",
+            "Admiro muito o homem maduro e focado que você está se tornando, lutando pelo nosso futuro...",
+            "E mesmo com as suas próprias missões, você sempre dá um jeito de me mimar e me fazer feliz.",
+            "Para mim, cada mangá e cada roupa que você me dá entram no inventário como itens lendários cheios de amor.",
+            "A vida real não tem botão de salvar, mas construir essa guilda e essa vida ao seu lado é minha melhor escolha.",
+            "Mal posso esperar pelo dia em que nossa maior missão será concluída: morarmos juntos e felizes.",
+            "Não importa o tamanho dos desafios que venham pela frente...",
+            "Eu sempre vou amar você. Meu Jogador 2, meu parceiro de equipe, para sempre."
+        ];
+
+        let currentIndex = -1;
+        let currentPhase = "story"; // Opções: story, question1, question2, final
+
+        const dialogueBox = document.getElementById('dialogueBox');
+        const dialogueTextEl = document.getElementById('dialogueText');
+        const blinkArrow = document.getElementById('blinkArrow');
+        const hpFillEl = document.getElementById('hpFill');
+        const bgm = document.getElementById('bgm');
+        const audioHint = document.getElementById('audioHint');
+        const optionsContainer = document.getElementById('optionsContainer');
+        const btnA = document.getElementById('btnA');
+        const btnB = document.getElementById('btnB');
+        const playerLvl = document.getElementById('playerLvl');
+        const screenVisual = document.getElementById('screenVisual');
+
+        function showDialogue(index) {
+            dialogueTextEl.textContent = dialogues[index];
+            
+            // Gerencia a barra de vida dinâmica durante a história
+            let progress = ((index + 1) / dialogues.length) * 100;
+            hpFillEl.style.width = `${Math.max(20, progress)}%`;
+        }
+
+        function nextDialogue() {
+            // Toca a música no primeiro clique
+            if (bgm.paused) {
+                bgm.play().catch(e => console.log("Áudio aguardando interação."));
+                audioHint.style.display = "none";
+            }
+
+            if (currentPhase === "story") {
+                currentIndex++;
+                if (currentIndex < dialogues.length) {
+                    showDialogue(currentIndex);
+                } else {
+                    // Fim da história básica -> Ativa a Pergunta 1 (Opção 2 antiga)
+                    currentPhase = "question1";
+                    setupQuestion1();
+                }
+            } else if (currentPhase === "final") {
+                // Se ele continuar clicando depois do fim, deixa uma mensagem fofa eterna
+                dialogueTextEl.textContent = "Te amo daqui até o fim do jogo! Obrigado por ser meu companheiro de equipe. ❤";
+            }
+        }
+
+        // Configura a tela para a Pergunta 1 (Roupas/Contrato Guilda)
+        function setupQuestion1() {
+            dialogueBox.style.cursor = "default";
+            blinkArrow.style.display = "none"; // Remove setinha de avançar temporariamente
+            
+Use o código com cuidado.dialogueTextEl.textContent = "Atenção! Seu inventário está cheio de roupas, mangás e muito amor. Deseja atualizar o contrato da nossa guilda por mais 99 anos?";btnA.textContent = "Sim (Com bônus de beijos) 😘";btnB.textContent = "Claro (Com bônus de abraços) 🤗";optionsContainer.style.display = "grid";}// Configura a tela para a Pergunta 2 (Level Up / Título)function setupQuestion2() {// Efeito visual de Level UpplayerLvl.textContent = "LVL: MAX (O Melhor!)";playerLvl.style.color = "#00ffcc";screenVisual.textContent = "⭐🏆⭐";dialogueTextEl.textContent = "Contrato renovado! E tem mais: Você ganhou XP suficiente enfrentando a vida real e se tornando esse homem incrível. Aceita receber o título de O Namorado Mais Perfeito do Mundo?";btnA.textContent = "Sim, eu aceito! 👑";btnB.textContent = "Não tenho escolha, aceito! ❤";optionsContainer.style.display = "grid";}// Lógica de cliques nos botõesfunction makeChoice(choice) {optionsContainer.style.display = "none"; // Esconde botões para mostrar transiçãoif (currentPhase === "question1") {currentPhase = "question2";// Pequena pausa dramática antes da segunda teladialogueTextEl.textContent = "Processando termos do contrato... Próxima janela de status abrindo!";setTimeout(setupQuestion2, 2000);} else if (currentPhase === "question2") {currentPhase = "final";screenVisual.textContent = "❤✨🥰";// Força barra de vida no máximo com cor mágicahpFillEl.style.width = "100%";hpFillEl.style.background = "#00ffcc";dialogueTextEl.textContent = "Título concedido com sucesso! Você é o meu maior orgulho, o homem que eu escolhi e que vou amar para sempre. Fim da Quest!";// Restaura o clique da caixa para interações futuras básicasdialogueBox.style.cursor = "pointer";blinkArrow.style.display = "block";}}
