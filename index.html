@@ -15,27 +15,66 @@
             align-items: center;
             height: 100vh;
             margin: 0;
+            overflow: hidden;
+            position: relative;
         }
 
-        /* Moldura de estilo pixel/retro rosa igual ao do seu app */
+        /* Camada para o efeito de partículas de corações flutuantes */
+        #camada-coracoes {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Estilo base de cada coração gerado */
+        .coracao-pixel {
+            position: absolute;
+            font-size: 24px;
+            user-select: none;
+            pointer-events: none;
+            animation: flutuarSubindo 4s linear forwards;
+            opacity: 0.8;
+        }
+
+        @keyframes flutuarSubindo {
+            0% {
+                transform: translateY(0) scale(0.8) rotate(0deg);
+                opacity: 1;
+            }
+            50% {
+                transform: translateY(-50vh) scale(1.2) rotate(15deg);
+            }
+            100% {
+                transform: translateY(-100vh) scale(0.8) rotate(-15deg);
+                opacity: 0;
+            }
+        }
+
+        /* Moldura de estilo pixel/retro rosa */
         .container-rpg {
             border: 4px solid #ff4b82;
             padding: 30px;
-            background-color: #16071a;
-            box-shadow: 0 0 20px #ff4b82;
+            background-color: rgba(22, 7, 26, 0.95);
+            box-shadow: 0 0 20px #ff4b82, inset 0 0 10px #ff4b82;
             width: 85%;
             max-width: 500px;
             text-align: center;
             border-radius: 8px;
+            z-index: 10;
+            position: relative;
         }
 
         /* Controle das telas do RPG */
         .tela {
-            display: none; /* Esconde todas por padrão */
+            display: none;
         }
 
         .tela.ativa {
-            display: block; /* Mostra apenas a que tiver a classe ativa */
+            display: block;
         }
 
         /* Estilo da caixa de clique interativa */
@@ -63,22 +102,25 @@
             right: 15px;
         }
 
-        /* Estilo para os botões de escolha */
+        /* Estilo para os botões de escolha verticais (melhor para textos longos) */
         .grupo-botoes {
             margin-top: 25px;
             display: flex;
-            justify-content: space-around;
+            flex-direction: column;
+            gap: 15px;
         }
 
         .botao-escolha {
             background-color: #110314;
             color: #ffffff;
             border: 2px solid #ff4b82;
-            padding: 10px 20px;
+            padding: 12px 15px;
             cursor: pointer;
             font-family: inherit;
             border-radius: 4px;
             transition: 0.2s;
+            font-size: 14px;
+            line-height: 1.4;
         }
 
         .botao-escolha:hover {
@@ -86,59 +128,113 @@
             color: #000000;
             box-shadow: 0 0 8px #ff4b82;
         }
+
+        .destaque-sucesso {
+            color: #00ffcc;
+            font-weight: bold;
+        }
+
+        .destaque-erro {
+            color: #ff3333;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
 
+    <!-- Container invisível onde os corações vão aparecer -->
+    <div id="camada-coracoes"></div>
+
     <div class="container-rpg">
 
-        <!-- TELA 1: TELA INICIAL (Caixa de Memórias) -->
+        <!-- TELA 1: TELA INICIAL -->
         <div id="tela-inicial" class="tela ativa">
-            <div class="caixa-transmissao" onclick="avancarTela('tela-historia-1')">
+            <div class="caixa-transmissao" onclick="avancarTela('tela-pergunta')">
                 <p><i>Clique para iniciar a transmissão de memórias...</i></p>
                 <span class="seta-play">▶</span>
             </div>
         </div>
 
-        <!-- TELA 2: HISTÓRIA E ESCOLHAS -->
-        <div id="tela-historia-1" class="tela">
-            <p>A transmissão de memórias foi iniciada com sucesso...</p>
-            <p><b>O que você deseja fazer agora, Jogador?</b></p>
+        <!-- TELA 2: A PERGUNTA DO QUIZ -->
+        <div id="tela-pergunta" class="tela">
+            <p>Conexão estabelecida...</p>
+            <p><b>Para provar que você é o Player 2 ideal, responda: Qual é o nosso jeito favorito de passar o tempo juntos?</b></p>
             
             <div class="grupo-botoes">
-                <button class="botao-escolha" onclick="avancarTela('tela-opcao-a')">Opção A</button>
-                <button class="botao-escolha" onclick="avancarTela('tela-opcao-b')">Opção B</button>
+                <button class="botao-escolha" onclick="avancarTela('tela-vitoria')">
+                    🎮 Jogando Brawl, assistindo filmes/animes e jogando Roblox
+                </button>
+                <button class="botao-escolha" onclick="avancarTela('tela-erro')">
+                    💤 Ficar sem fazer nada olhando pro teto
+                </button>
             </div>
         </div>
 
-        <!-- TELA 3A: SE CLICAR NA OPÇÃO A -->
-        <div id="tela-opcao-a" class="tela">
-            <p>Você escolheu a <b>Opção A</b>! ❤️</p>
-            <p>Aqui você pode colocar a continuação do seu texto romântico.</p>
+        <!-- TELA 3A: SE CLICAR NA OPÇÃO A (RESPOSTA CERTA) -->
+        <div id="tela-vitoria" class="tela">
+            <p class="destaque-sucesso">✨ ACERTOU EM CHEIO! ✨</p>
+            <p>Você ganhou <b>+9999 pontos de amor</b>!</p>
+            <p>Não existe nada melhor no mundo do que jogar e assistir nossas coisas juntos. Você é a minha pessoa favorita e o melhor duo que eu poderia ter na vida! ❤️</p>
             <div class="grupo-botoes">
-                <button class="botao-escolha" onclick="avancarTela('tela-inicial')">Reiniciar</button>
+                <button class="botao-escolha" onclick="avancarTela('tela-inicial')">Jogar Novamente 🔄</button>
             </div>
         </div>
 
-        <!-- TELA 3B: SE CLICAR NA OPÇÃO B -->
-        <div id="tela-opcao-b" class="tela">
-            <p>Você escolheu a <b>Opção B</b>! ✨</p>
-            <p>Um caminho diferente se abriu diante de você.</p>
+        <!-- TELA 3B: SE CLICAR NA OPÇÃO B (RESPOSTA ERRADA) -->
+        <div id="tela-erro" class="tela">
+            <p class="destaque-erro">❌ GAME OVER... Errou feio! ❌</p>
+            <p>Olhar pro teto?! Sério mesmo? Pensei que você me conhecia melhor...</p>
+            <p>Vou te dar mais uma chance de recuperar o seu save game.</p>
             <div class="grupo-botoes">
-                <button class="botao-escolha" onclick="avancarTela('tela-inicial')">Reiniciar</button>
+                <button class="botao-escolha" onclick="avancarTela('tela-pergunta')">Tentar Novamente 🎮</button>
             </div>
         </div>
 
     </div>
 
-    <!-- LÓGICA DE JAVASCRIPT CORRIGIDA (Sem links externos para o Google) -->
     <script>
+        const camadaCoracoes = document.getElementById('camada-coracoes');
+        const tiposCoracoes = ['❤️', '💖', '💘', '💝', '💕'];
+
+        function criarCoracao(x, y, automatico = false) {
+            const coracao = document.createElement('div');
+            coracao.classList.add('coracao-pixel');
+            coracao.innerText = tiposCoracoes[Math.floor(Math.random() * tiposCoracoes.length)];
+            coracao.style.left = x + 'px';
+            coracao.style.top = y + 'px';
+            
+            const tamanho = automatico ? (Math.random() * 16 + 12) : (Math.random() * 20 + 20);
+            coracao.style.fontSize = tamanho + 'px';
+            
+            const duracao = automatico ? (Math.random() * 3 + 3) : (Math.random() * 2 + 2);
+            coracao.style.animationDuration = duracao + 's';
+
+            camadaCoracoes.appendChild(coracao);
+
+            setTimeout(() => {
+                coracao.remove();
+            }, duracao * 1000);
+        }
+
+        window.addEventListener('click', (e) => {
+            const quantidade = Math.floor(Math.random() * 3) + 3;
+            for(let i = 0; i < quantidade; i++) {
+                const offsetX = (Math.random() * 40) - 20;
+                const offsetY = (Math.random() * 40) - 20;
+                criarCoracao(e.clientX + offsetX, e.clientY + offsetY, false);
+            }
+        });
+
+        setInterval(() => {
+            const xAleatorio = Math.random() * window.innerWidth;
+            const yInferior = window.innerHeight + 20; 
+            criarCoracao(xAleatorio, yInferior, true);
+        }, 400);
+
         function avancarTela(idDaProximaTela) {
-            // 1. Remove a classe ativa de todas as telas para escondê-las
             const telas = document.querySelectorAll('.tela');
             telas.forEach(tela => tela.classList.remove('ativa'));
 
-            // 2. Encontra a tela de destino e a exibe na tela do usuário
             const proximaTela = document.getElementById(idDaProximaTela);
             if (proximaTela) {
                 proximaTela.classList.add('ativa');
